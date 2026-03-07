@@ -116,13 +116,11 @@
   ══════════════════════════════════════ */
   function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
-    const cw  = canvasWrap.offsetWidth;
-    const ch  = canvasWrap.offsetHeight;
-    canvas.width  = cw * dpr;
-    canvas.height = ch * dpr;
+    canvas.width  = window.innerWidth  * dpr;
+    canvas.height = window.innerHeight * dpr;
     ctx.scale(dpr, dpr);
-    canvas.style.width  = cw + "px";
-    canvas.style.height = ch + "px";
+    canvas.style.width  = window.innerWidth  + "px";
+    canvas.style.height = window.innerHeight + "px";
   }
 
   function sampleBgColor(img) {
@@ -150,8 +148,8 @@
     const img = frames[index];
     if (!img) return;
 
-    const cw = canvasWrap.offsetWidth;
-    const ch = canvasWrap.offsetHeight;
+    const cw = window.innerWidth;
+    const ch = window.innerHeight;
     const iw = img.naturalWidth;
     const ih = img.naturalHeight;
 

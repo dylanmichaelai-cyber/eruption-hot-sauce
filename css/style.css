@@ -141,69 +141,58 @@ a { text-decoration: none; color: inherit; }
 .header-nav .nav-cta:hover { background: var(--lava); color: #000; }
 
 /* ══════════════════════════════════════════════════════
-   ACT 1 — SPLIT SCREEN LAYOUT
-   Left 40%: fixed text panel
-   Right 60%: fixed canvas (volcano video)
+   ACT 1 — FULL SCREEN HERO
+   Canvas: full viewport behind everything
+   Text panel: centered overlay on top
 ══════════════════════════════════════════════════════ */
 
-/* ── LEFT PANEL ── */
+/* ── HERO OVERLAY PANEL ── */
 .left-panel {
   position: fixed;
-  left: 0;
-  top: 0;
-  width: 40vw;
+  inset: 0;
+  width: 100vw;
   height: 100vh;
   z-index: 100;
-  background: var(--bg);
+  background: transparent;
   display: flex;
   align-items: center;
+  justify-content: center;
   will-change: opacity;
 }
 
-/* Vertical accent line dividing left and right */
-.left-panel-line {
-  position: absolute;
-  right: 0;
-  top: 10%;
-  bottom: 10%;
-  width: 1px;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(255,69,0,0.5) 20%,
-    rgba(255,69,0,0.5) 80%,
-    transparent
-  );
-}
+/* Divider line hidden — no longer split screen */
+.left-panel-line { display: none; }
 
 .lp-inner {
-  padding: 100px 6vw 60px 6vw;
+  padding: 0 8vw;
   width: 100%;
+  max-width: 900px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
   gap: 0;
 }
 
 .lp-eyebrow {
   display: block;
-  font-size: 0.58rem;
-  letter-spacing: 0.24em;
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--lava);
-  margin-bottom: 28px;
-  /* visible immediately, GSAP animates on load */
+  margin-bottom: 32px;
 }
 
-/* Hero heading — left aligned, massive, white */
+/* Hero heading — centered, massive, white */
 .lp-heading {
   font-family: var(--font-display);
-  font-size: clamp(3.5rem, 6vw, 6rem);
+  font-size: clamp(5rem, 10vw, 10rem);
   line-height: 0.88;
   letter-spacing: -0.01em;
   text-transform: uppercase;
   color: var(--text);
-  margin-bottom: 28px;
+  text-shadow: 0 2px 40px rgba(0,0,0,0.8);
+  margin-bottom: 32px;
 }
 
 .lp-word {
@@ -211,22 +200,25 @@ a { text-decoration: none; color: inherit; }
 }
 .lp-accent { color: var(--lava); }
 
-/* Subheadline — white, left aligned */
+/* Subheadline — centered */
 .lp-sub {
-  font-size: clamp(0.72rem, 1.1vw, 0.82rem);
-  color: rgba(255,255,255,0.7);
+  font-size: clamp(0.75rem, 1.2vw, 0.88rem);
+  color: rgba(255,255,255,0.8);
   line-height: 1.9;
-  letter-spacing: 0.06em;
-  margin-bottom: 36px;
-  max-width: 320px;
+  letter-spacing: 0.08em;
+  margin-bottom: 40px;
+  max-width: 480px;
+  text-shadow: 0 1px 12px rgba(0,0,0,0.9);
 }
 
 /* CTA buttons */
 .lp-btns {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 48px;
+  flex-direction: row;
+  gap: 16px;
+  margin-bottom: 52px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .cta-btn {
@@ -322,15 +314,13 @@ a { text-decoration: none; color: inherit; }
   color: var(--lava);
 }
 
-/* ── RIGHT PANEL — CANVAS ── */
+/* ── CANVAS — full viewport, behind everything ── */
 .canvas-wrap {
   position: fixed;
-  right: 0;
-  top: 0;
-  width: 60vw;
+  inset: 0;
+  width: 100vw;
   height: 100vh;
   z-index: 5;
-  /* Start hidden, revealed by JS as scroll begins */
   opacity: 0;
   will-change: opacity;
 }
@@ -341,14 +331,11 @@ a { text-decoration: none; color: inherit; }
   display: block;
 }
 
-/* Left edge feather — blends canvas into left panel */
+/* Subtle dark vignette for text legibility */
 .canvas-fade-left {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 80px;
-  height: 100%;
-  background: linear-gradient(to right, rgba(0,0,0,0.7), transparent);
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 100%);
   pointer-events: none;
   z-index: 2;
 }
