@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERUPTION — Born from Fire. Built for Heat.</title>
+  <meta name="description" content="Single-origin volcanic hot sauce. Calibrated intensity. Zero fillers. 4.2 million Scoville." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Aldrich&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       PRELOADER
+  ══════════════════════════════════════ -->
+  <div id="loader">
+    <div class="loader-inner">
+      <div class="loader-brand">ERUPTION</div>
+      <div class="loader-readout" id="loader-readout">INITIALIZING HEAT CALIBRATION</div>
+      <div class="loader-bar-wrap">
+        <div id="loader-bar"></div>
+      </div>
+      <div id="loader-percent">000%</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       FIXED HEADER
+  ══════════════════════════════════════ -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-logo">ERUPTION<span class="logo-sup">®</span></div>
+    <nav class="header-nav">
+      <a href="#landing-features">HEAT SCIENCE</a>
+      <a href="#landing-stats">DATA</a>
+      <a href="#landing-cta" class="nav-cta">SHOP NOW</a>
+    </nav>
+  </header>
+
+  <!-- ══════════════════════════════════════
+       ACT 1 — SPLIT SCREEN
+       Left 40% = text panel (fixed)
+       Right 60% = volcano canvas (fixed)
+  ══════════════════════════════════════ -->
+
+  <!-- LEFT PANEL: hero text, always visible during scroll animation -->
+  <div class="left-panel" id="leftPanel">
+    <!-- Vertical accent line on right edge -->
+    <div class="left-panel-line" aria-hidden="true"></div>
+
+    <div class="lp-inner">
+      <span class="lp-eyebrow" id="lpEyebrow">[ VOLCANIC ORIGIN HOT SAUCE ]</span>
+
+      <h1 class="lp-heading">
+        <span class="lp-word">BORN</span><br>
+        <span class="lp-word">FROM</span><br>
+        <span class="lp-word lp-accent">FIRE.</span>
+      </h1>
+
+      <p class="lp-sub" id="lpSub">
+        Single-origin volcanic peppers.<br>
+        4.2M Scoville. Zero fillers.<br>
+        Built for those who eat at the edge.
+      </p>
+
+      <div class="lp-btns" id="lpBtns">
+        <a href="#landing-hero" class="cta-btn cta-btn--lava">SHOP NOW</a>
+        <a href="#landing-cta" class="cta-btn cta-btn--outline">HEAT GUIDE →</a>
+      </div>
+
+      <!-- Scroll cue -->
+      <div class="lp-scroll-cue" id="lpScrollCue">
+        <div class="lsc-line"></div>
+        <span class="lsc-label">SCROLL TO IGNITE</span>
+      </div>
+
+      <!-- Live heat meter (updates with scroll) -->
+      <div class="lp-heat-meter" id="heatMeter">
+        <span class="lhm-label">HEAT LEVEL</span>
+        <div class="lhm-track">
+          <div class="lhm-fill" id="heatBarFill"></div>
+        </div>
+        <span class="lhm-value" id="heatValue">0 SHU</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL: Canvas — volcano plays frame by frame -->
+  <div class="canvas-wrap" id="canvasWrap">
+    <canvas id="canvas"></canvas>
+    <!-- Fade gradient on left edge to blend with text panel -->
+    <div class="canvas-fade-left" aria-hidden="true"></div>
+  </div>
+
+  <!-- Scroll container: 1000vh — drives video frame animation only -->
+  <div id="scroll-container"></div>
+
+  <!-- ══════════════════════════════════════
+       ACT 2 — LANDING PAGE SECTIONS
+       Full width, black background, white text
+  ══════════════════════════════════════ -->
+
+  <!-- Trigger zone: left panel + canvas fade out here -->
+  <div class="canvas-exit-trigger" id="canvasExitTrigger"></div>
+
+  <!-- LANDING: HERO -->
+  <section class="landing-section landing-hero" id="landing-hero">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="landing-hero-inner">
+      <span class="landing-label">ERUPTION HOT SAUCE</span>
+      <h2 class="landing-hero-heading">
+        BORN FROM<br>FIRE.<br><span class="heading-accent">BUILT FOR<br>HEAT.</span>
+      </h2>
+      <div class="lava-rule"></div>
+      <p class="landing-hero-sub">
+        Crafted from volcanic-region peppers. Engineered for maximum intensity.<br>
+        For those who eat at the edge.
+      </p>
+      <div class="landing-hero-btns">
+        <a href="#" class="lp-btn lp-btn-lava">SHOP NOW</a>
+        <a href="#landing-cta" class="lp-btn lp-btn-outline">FIND YOUR HEAT →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- LANDING: FEATURES -->
+  <section class="landing-section landing-features" id="landing-features">
+    <div class="features-header">
+      <span class="landing-label">HEAT SCIENCE</span>
+      <h2 class="features-title">THREE PRINCIPLES.<br>ZERO COMPROMISE.</h2>
+    </div>
+
+    <div class="feature-row feature-row--left">
+      <div class="feature-number">01</div>
+      <div class="feature-content">
+        <span class="feature-tag">VOLCANIC ORIGIN</span>
+        <h3 class="feature-heading">THE SOIL IS THE SECRET</h3>
+        <p class="feature-body">Grown in mineral-rich volcanic earth where extreme geothermal conditions push peppers to their physiological heat limit. The land does what cultivated farms cannot.</p>
+        <div class="feature-spec"><span>ALTITUDE_</span><span class="spec-val">1,400–2,800m</span></div>
+      </div>
+    </div>
+
+    <div class="feature-divider"></div>
+
+    <div class="feature-row feature-row--right">
+      <div class="feature-content">
+        <span class="feature-tag">PRECISION HEAT</span>
+        <h3 class="feature-heading">CALIBRATED TO THE UNIT</h3>
+        <p class="feature-body">Every batch is laboratory-verified via High-Performance Liquid Chromatography. Scoville deviation less than 0.3%. You always get exactly what the label says.</p>
+        <div class="feature-spec"><span>TOLERANCE_</span><span class="spec-val">±0.3% SHU</span></div>
+      </div>
+      <div class="feature-number">02</div>
+    </div>
+
+    <div class="feature-divider"></div>
+
+    <div class="feature-row feature-row--left">
+      <div class="feature-number">03</div>
+      <div class="feature-content">
+        <span class="feature-tag">ZERO FILLERS</span>
+        <h3 class="feature-heading">TWO INGREDIENTS. FULL STOP.</h3>
+        <p class="feature-body">Pepper. Salt. The fermentation does everything else. No vinegar dilution. No stabilizers. The burn arrives as nature built it — clean, pure, uncompromising.</p>
+        <div class="feature-spec"><span>INGREDIENTS_</span><span class="spec-val">02 TOTAL</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LANDING: STATS BAR -->
+  <section class="landing-section landing-stats" id="landing-stats">
+    <div class="stats-bar">
+      <div class="lp-stat">
+        <div class="lp-stat-top">
+          <span class="lp-stat-num" data-lp-value="4.2" data-lp-decimals="1" data-lp-suffix="M">0</span>
+          <span class="lp-stat-unit">SHU</span>
+        </div>
+        <span class="lp-stat-label">Max Scoville rating</span>
+      </div>
+      <div class="stats-bar-div"></div>
+      <div class="lp-stat">
+        <div class="lp-stat-top">
+          <span class="lp-stat-num" data-lp-value="7" data-lp-decimals="0">0</span>
+          <span class="lp-stat-unit">VAR</span>
+        </div>
+        <span class="lp-stat-label">Pepper varieties</span>
+      </div>
+      <div class="stats-bar-div"></div>
+      <div class="lp-stat">
+        <div class="lp-stat-top">
+          <span class="lp-stat-num" data-lp-value="3" data-lp-decimals="0">0</span>
+          <span class="lp-stat-unit">REG</span>
+        </div>
+        <span class="lp-stat-label">Volcanic source regions</span>
+      </div>
+      <div class="stats-bar-div"></div>
+      <div class="lp-stat">
+        <div class="lp-stat-top">
+          <span class="lp-stat-num" data-lp-value="94" data-lp-decimals="0">0</span>
+          <span class="lp-stat-unit">%</span>
+        </div>
+        <span class="lp-stat-label">Repurchase rate</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- LANDING: CSS MARQUEE STRIP -->
+  <div class="landing-marquee" id="landing-marquee">
+    <div class="lp-marquee-track">
+      <div class="lp-marquee-inner">
+        <span>ERUPTION</span><span class="mq-div">/</span>
+        <span>VOLCANIC HEAT</span><span class="mq-div">/</span>
+        <span>SINGLE ORIGIN</span><span class="mq-div">/</span>
+        <span>BORN FROM FIRE</span><span class="mq-div">/</span>
+        <span>ZERO FILLERS</span><span class="mq-div">/</span>
+        <span>4.2M SCOVILLE</span><span class="mq-div">/</span>
+        <span>9 HEAT LEVELS</span><span class="mq-div">/</span>
+        <span>ERUPTION</span><span class="mq-div">/</span>
+        <span>VOLCANIC HEAT</span><span class="mq-div">/</span>
+        <span>SINGLE ORIGIN</span><span class="mq-div">/</span>
+        <span>BORN FROM FIRE</span><span class="mq-div">/</span>
+        <span>ZERO FILLERS</span><span class="mq-div">/</span>
+        <span>4.2M SCOVILLE</span><span class="mq-div">/</span>
+        <span>9 HEAT LEVELS</span><span class="mq-div">/</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANDING: FINAL CTA -->
+  <section class="landing-section landing-cta" id="landing-cta">
+    <div class="cta-glow" aria-hidden="true"></div>
+    <div class="landing-cta-inner">
+      <span class="landing-label">FIND YOUR HEAT LEVEL</span>
+      <h2 class="landing-cta-heading">9 INTENSITIES.<br>ONE OBSESSION.</h2>
+      <p class="landing-cta-sub">From EMBER — a manageable warmth — to CATASTROPHIC — reserved for the terminally reckless. Every level is a distinct formulation. Find yours.</p>
+      <div class="landing-cta-btns">
+        <a href="#" class="lp-btn lp-btn-lava lp-btn-lg">SHOP ALL SAUCES</a>
+        <a href="#" class="lp-btn lp-btn-outline lp-btn-lg">TAKE HEAT QUIZ →</a>
+      </div>
+      <div class="heat-levels" aria-hidden="true">
+        <span class="hl" data-level="1"></span>
+        <span class="hl" data-level="2"></span>
+        <span class="hl" data-level="3"></span>
+        <span class="hl" data-level="4"></span>
+        <span class="hl" data-level="5"></span>
+        <span class="hl" data-level="6"></span>
+        <span class="hl" data-level="7"></span>
+        <span class="hl" data-level="8"></span>
+        <span class="hl" data-level="9"></span>
+      </div>
+      <div class="heat-level-labels">
+        <span>EMBER</span>
+        <span>CATASTROPHIC</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-rule"></div>
+    <div class="footer-inner">
+      <div class="footer-logo">ERUPTION<span>®</span></div>
+      <div class="footer-tagline">Born from fire. Built for heat.</div>
+      <nav class="footer-nav">
+        <a href="#">Shop</a>
+        <a href="#">Heat Guide</a>
+        <a href="#">Origin</a>
+        <a href="#">Contact</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ERUPTION. All rights reserved.</span>
+      <span>Volcanic origin. Zero compromise.</span>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
