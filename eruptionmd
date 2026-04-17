@@ -1,0 +1,106 @@
+CLAUDE CODE ROUTINES — FINAL SCRIPT
+
+TITLES
+Claude Code Just Killed n8n
+Your Automations Run Without You Now
+I Let Claude Handle My Inbox While I Slept
+THUMBNAIL
+Your face, slight smirk, arms crossed
+Big bold text: "NO LAPTOP NEEDED"
+Smaller text: "Claude runs itself now"
+Dark background, red accent
+
+BEFORE YOU FILM
+[ ] Go to claude.ai/settings → Connectors → connect Gmail
+[ ] Go to claude.ai/code/routines → build the inbox routine → run it once so Gmail drafts are already there
+[ ] Gmail drafts tab open and ready to switch to
+[ ] Slides open in Chrome full screen
+[ ] claude.ai/code/routines open in another tab
+[ ] Blank New Routine form ready for the walkthrough
+
+PART 1 — INTRO + LIVE DEMO
+[SCREEN: claude.ai/code/routines — routine visible with scheduled trigger]
+"Anthropic just dropped Routines inside Claude Code and it basically means your automations can now run 24/7 without your laptop being on. Scheduled agents, API triggers, webhooks — all running on their servers, not yours."
+"So I set one up that reads my inbox every morning and writes draft replies for every email while I sleep. Let me just show you what it actually did."
+[Switch to Gmail Drafts — show drafts already sitting there]
+"Those are all draft replies Claude wrote. I didn't touch anything. Let me show you how it works and how to set one up yourself."
+[Switch back to claude.ai/code/routines]
+"I'm going to hit Run Now so we can watch it go live together."
+[Click Run Now]
+"So right now Claude is going through my Gmail inbox. Reading every unread email. Pulling up the full conversation history for each person. And writing a reply for each one. All of that is happening on Anthropic's servers — nothing on my end is running."
+[Tool calls appearing on screen — Claude working through emails]
+"Okay it's done. Let's go check Gmail."
+[Switch to Gmail Drafts folder]
+"There you go. Draft replies. One for every unread email I had. Written, ready to send, sitting in my drafts right now."
+"I didn't write any of those. My laptop was off. It just ran."
+"That's what just dropped inside Claude Code. It's called Routines. Let me show you how to set one up."
+
+PART 2 — WHAT IS IT
+[SCREEN: Switch to Slide 1]
+"So what is this actually. A Routine is just a prompt that runs on its own. You write out what you want Claude to do — same as you'd normally talk to it. You connect whatever accounts it needs access to. You pick when you want it to run. And that's it. It just goes."
+"There are three ways to kick it off. You can schedule it — every morning, every hour, every weekday, whatever. Minimum is once per hour. You can also trigger it from another tool, so if something happens somewhere else it fires this automatically. Or you can set up a webhook — so for example when a new lead comes in, it immediately runs and does something with that lead."
+"And the big thing here — it runs on Anthropic's servers. Not yours. So your laptop doesn't need to be on. You don't need anything running in the background. You just wake up and whatever you set it to do is already done."
+
+PART 3 — OLD WAY VS NEW WAY
+[SCREEN: Switch to Slide 2]
+"Okay so why does this matter. Because I know a lot of people watching this already have n8n or Make set up and are thinking — I already have automations, why do I need this."
+"Here's the honest answer. Building something in n8n looks like this — you open it up, you start dragging nodes around, connecting them together, mapping your variables, setting up credentials for every single service. You test it, something breaks, the error message tells you nothing useful, you spend an hour figuring out what went wrong. And when it finally works your server has to stay running or the whole thing stops."
+"I've done that. It works. But it's slow to build and annoying to maintain."
+"With Routines you just write out what you want to happen. Claude figures out the steps. And the thing that actually makes this better — if something goes wrong halfway through, Claude reads the error, adjusts, and keeps going. n8n just stops. Claude doesn't."
+"The only limitation is if a tool you want to use doesn't have an API — like if you need Claude to actually log into a website and click around. That won't work. Every run starts completely fresh, no saved logins, nothing like that. But anything with an API works fine."
+
+PART 4 — BUILD FROM SCRATCH
+[SCREEN: Navigate to claude.ai/settings]
+"Alright let's build one. I'll go through every step."
+"First — before you even create the routine, go to claude.ai/settings and click Connectors. This is where you connect your accounts. You have to do this first because if you skip it, Gmail won't show up as an option when you're inside the routine builder and you'll have to come back anyway."
+"Find Gmail, click connect, sign in with Google, click allow. Done."
+[Show: Connectors → Add Connector → Gmail → OAuth → connected]
+"Now go to claude.ai/code/routines and hit New Routine."
+[Navigate to routines page → click New Routine]
+"Give it a name — I'm going with Inbox Drafter."
+[Type: Inbox Drafter]
+"Now this box is the most important part. This is your prompt. This is what Claude actually reads and follows when the routine runs. And because this runs without you watching it, you want to be specific. Don't be vague. Write it like you're leaving instructions for someone who doesn't know anything about you."
+"Here's what I'm using for this one."
+[SCREEN: TYPE THIS INTO THE PROMPT BOX SLOWLY:]
+Check my Gmail inbox for all unread emails. For each one, review the sender, the subject line, and any previous email thread history with that person. Based on that context, write a reply and save it as a draft directly in Gmail. Once all drafts are saved, stop.
+"Short, specific, tells it exactly when to stop. That last part matters — if you don't tell it to stop it'll just keep going."
+"Now pick a GitHub repo. Any repo works, even an empty one. But if you have a CLAUDE.md in your repo — which is basically just a document you write once that tells Claude who you are, how you write, what your business does — Claude reads that every single time this runs. So for email replies it's going to sound like you, not like a robot. Worth setting up."
+[Select repo from dropdown]
+"Model — Sonnet is fine, leave it."
+"Trigger — Schedule, daily, 7am."
+[Click Schedule → Daily → 7:00 AM]
+"Connectors — Gmail is already connected so it shows up here. Add it."
+[Add Gmail connector]
+"Now Cloud Environment — click the settings icon."
+[Click Cloud Environment settings]
+"Two things here. First — if your routine needs any API keys, like if you wanted it to pull YouTube comments or post somewhere, you'd paste those keys in here. For this one we don't need anything extra so we can skip that."
+"Second thing — and this is the one that will quietly break your automation if you miss it — change Network Access to Full right here."
+[Change Network Access to Full]
+"By default it's set to Trusted, which means Claude can only reach a small list of approved websites. Most tools you'd actually want to use aren't on that list. So it just silently fails and you have no idea why. Setting it to Full removes that restriction. Just do it every time."
+"Hit Create."
+[Click Create]
+"Now hit Run Now to test it before you trust it on a schedule."
+[Click Run Now]
+"Watch it go all the way through the first time. Make sure it completes without stopping to ask you something — because at 7am when this runs for real, you're asleep. You need to know it can finish on its own."
+[Watch it run — tool calls, Claude reading inbox, saving drafts]
+"Done. Let's check Gmail."
+[Switch to Gmail Drafts]
+"Draft replies. All of them. Every morning from now on."
+"That's the whole setup."
+
+PART 5 — THREE THINGS TO KNOW
+[SCREEN: Switch to Slide 3]
+"Real quick — three things that will save you time."
+"One — connect your accounts in settings before you build the routine. Not during. If you try to add Gmail inside the routine builder without connecting it first, it won't be there. Settings first, then build."
+"Two — Network Access to Full. I just covered this but it's worth saying again because it's the thing that will make your routine silently fail and you'll have no idea why. Default is Trusted which is too restricted. Change it to Full every time."
+"Three — no website logins. If the tool you want to automate doesn't have an API — meaning you normally have to go to a website, log in, and click around to use it — Routines can't do that. It starts completely fresh every run. No saved passwords, no cookies, nothing. Has to be an API."
+
+PART 6 — OUTRO
+[SCREEN: Back to claude.ai/code/routines — scheduled routine visible]
+"One more thing — limits. Pro plan gets five routine runs per day. Max plan gets fifteen. Minimum is once per hour. For most people that's plenty."
+"So that's it. You write a prompt, connect your accounts, set a schedule, and Claude handles it. Laptop off. No server running. Just done."
+"I'm migrating all my automations over to this and I'm dropping the exact prompts inside Dylan Automates Pro. Comment ROUTINE below and I'll send them to you."
+"Subscribe — putting this out every day."
+
+RUNTIME: 10–12 minutes
+
