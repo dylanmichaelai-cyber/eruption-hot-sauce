@@ -1,0 +1,18 @@
+# Environment / secrets
+.env
+routines/.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node (if ever added)
+node_modules/
