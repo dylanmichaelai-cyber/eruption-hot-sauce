@@ -1,0 +1,3 @@
+routines/.env
+*.pyc
+__pycache__/
