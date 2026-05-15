@@ -1,0 +1,191 @@
+#!/usr/bin/env python3
+"""
+Reads comments.json, uses Claude to analyze sentiment and improvement areas,
+then sends an HTML summary email via Gmail SMTP.
+
+Usage:
+  python3 scripts/analyze_and_email.py
+
+Required env vars:
+  ANTHROPIC_API_KEY    - Anthropic API key for Claude analysis
+  GMAIL_ADDRESS        - Your Gmail address (sender + recipient)
+  GMAIL_APP_PASSWORD   - Gmail App Password (not your regular password)
+                         Get one at: myaccount.google.com > Security > App passwords
+
+Optional env vars:
+  RECIPIENT_EMAIL      - Where to send the report (defaults to GMAIL_ADDRESS)
+  COMMENTS_FILE        - Path to comments JSON (default: scripts/comments.json)
+"""
+
+import os
+import json
+import sys
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from datetime import datetime, timezone
+import anthropic
+
+
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+GMAIL_ADDRESS = os.environ.get("GMAIL_ADDRESS", "")
+GMAIL_APP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD", "")
+RECIPIENT_EMAIL = os.environ.get("RECIPIENT_EMAIL", GMAIL_ADDRESS)
+COMMENTS_FILE = os.environ.get(
+    "COMMENTS_FILE",
+    os.path.join(os.path.dirname(__file__), "comments.json"),
+)
+
+
+ANALYSIS_PROMPT = """You are a YouTube analytics expert. Analyze the following comments from a creator's videos and produce a structured report.
+
+COMMENTS DATA:
+{comments_text}
+
+Write a report with these exact sections:
+
+## Overall Sentiment
+A 2-3 sentence summary of how viewers feel overall. Include an approximate breakdown (e.g. "~70% positive, ~20% neutral, ~10% critical").
+
+## What Viewers Love
+3-5 bullet points on what people consistently praise or enjoy.
+
+## Top Improvement Areas
+4-6 specific, actionable suggestions based on recurring criticisms or requests. Be direct and concrete.
+
+## Trending Topics
+List 4-6 keywords or themes that come up most frequently in the comments.
+
+## Standout Comments
+Pick 3 representative comments (one very positive, one critical/constructive, one interesting/unique). Quote them verbatim and briefly note why each is notable.
+
+Keep the tone encouraging but honest. Focus on patterns, not individual comments."""
+
+
+def load_comments(path):
+    if not os.path.exists(path):
+        print(f"ERROR: {path} not found. Run fetch_youtube_comments.py first.", file=sys.stderr)
+        sys.exit(1)
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def build_comments_text(data):
+    lines = []
+    for video in data["videos"]:
+        lines.append(f"\n=== VIDEO: {video['title']} ===")
+        lines.append(f"URL: {video['url']}")
+        lines.append(f"Comments ({video['comment_count']}):")
+        for c in video["comments"]:
+            likes = f" [{c['likes']} likes]" if c["likes"] else ""
+            lines.append(f"  - {c['text'][:300]}{likes}")
+    return "\n".join(lines)
+
+
+def analyze_with_claude(comments_text):
+    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+    prompt = ANALYSIS_PROMPT.format(comments_text=comments_text)
+    message = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=2048,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return message.content[0].text
+
+
+def markdown_to_html(text):
+    """Minimal markdown → HTML for the email body."""
+    import re
+    lines = text.split("\n")
+    html_lines = []
+    for line in lines:
+        if line.startswith("## "):
+            html_lines.append(f"<h2 style='color:#c0392b;margin-top:24px'>{line[3:]}</h2>")
+        elif line.startswith("- "):
+            html_lines.append(f"<li style='margin:4px 0'>{line[2:]}</li>")
+        elif line.strip() == "":
+            html_lines.append("<br>")
+        else:
+            html_lines.append(f"<p style='margin:6px 0'>{line}</p>")
+    # Wrap consecutive <li> in <ul>
+    body = "\n".join(html_lines)
+    body = re.sub(r"(<li.*?</li>\n?)+", lambda m: f"<ul style='padding-left:20px'>{m.group()}</ul>", body)
+    return body
+
+
+def build_email_html(data, analysis):
+    total = data["total_comments"]
+    video_count = len(data["videos"])
+    fetched = data["fetched_at"][:10]
+
+    body_html = markdown_to_html(analysis)
+
+    return f"""<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family:Arial,sans-serif;max-width:700px;margin:0 auto;padding:20px;color:#222">
+  <div style="background:#c0392b;padding:20px 24px;border-radius:8px 8px 0 0">
+    <h1 style="color:#fff;margin:0;font-size:22px">YouTube Comment Summary</h1>
+    <p style="color:#f5c6c6;margin:6px 0 0">{fetched} &nbsp;·&nbsp; {video_count} videos &nbsp;·&nbsp; {total} comments analyzed</p>
+  </div>
+  <div style="background:#fafafa;padding:24px;border:1px solid #eee;border-top:none;border-radius:0 0 8px 8px">
+    {body_html}
+    <hr style="border:none;border-top:1px solid #eee;margin:32px 0 16px">
+    <p style="font-size:12px;color:#999">
+      Generated by your YouTube Summary routine &nbsp;·&nbsp;
+      Videos scanned: {', '.join(f'<a href="{v["url"]}">{v["title"][:40]}</a>' for v in data["videos"])}
+    </p>
+  </div>
+</body>
+</html>"""
+
+
+def send_email(recipient, subject, html_body, plain_body):
+    if not GMAIL_ADDRESS or not GMAIL_APP_PASSWORD:
+        print("ERROR: GMAIL_ADDRESS or GMAIL_APP_PASSWORD not set.", file=sys.stderr)
+        print("Set these env vars to enable email sending.", file=sys.stderr)
+        print("\n--- EMAIL PREVIEW ---")
+        print(plain_body)
+        return False
+
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = GMAIL_ADDRESS
+    msg["To"] = recipient
+    msg.attach(MIMEText(plain_body, "plain"))
+    msg.attach(MIMEText(html_body, "html"))
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+        smtp.login(GMAIL_ADDRESS, GMAIL_APP_PASSWORD)
+        smtp.sendmail(GMAIL_ADDRESS, recipient, msg.as_string())
+
+    return True
+
+
+def main():
+    if not ANTHROPIC_API_KEY:
+        print("ERROR: ANTHROPIC_API_KEY not set.", file=sys.stderr)
+        sys.exit(1)
+
+    print("Loading comments...")
+    data = load_comments(COMMENTS_FILE)
+    print(f"Loaded {data['total_comments']} comments across {len(data['videos'])} videos.")
+
+    print("Analyzing with Claude...")
+    comments_text = build_comments_text(data)
+    analysis = analyze_with_claude(comments_text)
+
+    subject = f"YouTube Insights — {datetime.now(timezone.utc).strftime('%b %d, %Y')} ({data['total_comments']} comments)"
+    html_body = build_email_html(data, analysis)
+
+    recipient = RECIPIENT_EMAIL or GMAIL_ADDRESS
+    print(f"Sending email to {recipient}...")
+    sent = send_email(recipient, subject, html_body, analysis)
+    if sent:
+        print("Email sent successfully.")
+    else:
+        print("Email not sent (missing SMTP credentials) — preview printed above.")
+
+
+if __name__ == "__main__":
+    main()
