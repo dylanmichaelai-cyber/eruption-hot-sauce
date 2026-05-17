@@ -1,0 +1,4 @@
+.env
+scripts/_last_summary.txt
+__pycache__/
+*.pyc
