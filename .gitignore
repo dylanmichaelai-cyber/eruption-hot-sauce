@@ -1,0 +1,3 @@
+scripts/.env
+*.pyc
+__pycache__/
