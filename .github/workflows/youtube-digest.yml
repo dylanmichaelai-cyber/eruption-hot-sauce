@@ -1,0 +1,31 @@
+name: YouTube Comment Digest
+
+on:
+  schedule:
+    # Every Monday at 8am UTC (adjust timezone as needed)
+    - cron: "0 8 * * 1"
+  workflow_dispatch:  # allow manual runs from GitHub Actions UI
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Run digest
+        env:
+          YOUTUBE_API_KEY:   ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          EMAIL_FROM:        ${{ secrets.EMAIL_FROM }}
+          EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
+          EMAIL_TO:          ${{ secrets.EMAIL_TO }}
+        run: python scripts/youtube_comment_digest.py
