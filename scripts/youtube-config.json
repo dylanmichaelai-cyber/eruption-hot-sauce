@@ -1,0 +1,7 @@
+{
+  "apiKey": "AIzaSyDrPa11MXDW3V6A6HU3_mPt7klQjJp5T8c",
+  "channelId": "YOUR_CHANNEL_ID",
+  "maxVideos": 10,
+  "maxCommentsPerVideo": 100,
+  "daysBack": 7
+}
