@@ -1,0 +1,41 @@
+name: YouTube Comment Digest
+
+on:
+  schedule:
+    # Every Monday at 9:03 AM UTC
+    - cron: '3 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      days_back:
+        description: 'Days of videos to analyze'
+        required: false
+        default: '7'
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Run YouTube comment digest
+        env:
+          YOUTUBE_API_KEY:    ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
+          ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
+          SMTP_USER:          ${{ secrets.SMTP_USER }}
+          SMTP_PASS:          ${{ secrets.SMTP_PASS }}
+          EMAIL_TO:           ${{ secrets.EMAIL_TO }}
+          DAYS_BACK:          ${{ github.event.inputs.days_back || '7' }}
+        run: python scripts/youtube_digest.py
