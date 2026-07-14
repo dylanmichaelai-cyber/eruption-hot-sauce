@@ -1,0 +1,37 @@
+name: YouTube Comment Summary
+
+on:
+  schedule:
+    # Every Monday at 9:03am UTC
+    - cron: '3 9 * * 1'
+  workflow_dispatch:
+    # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: scripts/youtube-summary/package.json
+
+      - name: Install dependencies
+        working-directory: scripts/youtube-summary
+        run: npm install
+
+      - name: Fetch comments and send summary
+        working-directory: scripts/youtube-summary
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          RECIPIENT_EMAIL: d.mcderm80@gmail.com
+        run: node index.js
