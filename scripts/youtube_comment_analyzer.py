@@ -4,7 +4,13 @@ YouTube Comment Fetcher
 Fetches recent videos and comments from a YouTube channel.
 Outputs JSON to stdout for downstream analysis.
 
-Required env var: YOUTUBE_API_KEY
+Required env vars:
+  YOUTUBE_API_KEY         - YouTube Data API v3 key (must have YouTube Data API v3 enabled)
+  YOUTUBE_CHANNEL_HANDLE  - e.g. "@EruptionHotSauce"  (preferred, no OAuth needed)
+         OR
+  YOUTUBE_CHANNEL_ID      - e.g. "UCxxxxxxxxxxxxxxx"
+
+Note: The API key must NOT be restricted to specific domains/IPs for server-side use.
 """
 
 import os
@@ -26,13 +32,34 @@ def youtube_get(endpoint, params):
 
 
 def get_channel_info():
-    data = youtube_get("channels", {
-        "part": "id,snippet,contentDetails",
-        "mine": "true",
-    })
+    channel_handle = os.environ.get("YOUTUBE_CHANNEL_HANDLE")
+    channel_id = os.environ.get("YOUTUBE_CHANNEL_ID")
+
+    if channel_handle:
+        # forHandle works for @-prefixed handles
+        handle = channel_handle if channel_handle.startswith("@") else f"@{channel_handle}"
+        data = youtube_get("channels", {
+            "part": "id,snippet,contentDetails",
+            "forHandle": handle,
+        })
+    elif channel_id:
+        data = youtube_get("channels", {
+            "part": "id,snippet,contentDetails",
+            "id": channel_id,
+        })
+    else:
+        print(
+            "ERROR: Set YOUTUBE_CHANNEL_HANDLE (e.g. '@YourChannel') or "
+            "YOUTUBE_CHANNEL_ID env var.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     items = data.get("items", [])
     if not items:
-        raise RuntimeError("No channel found for this API key. Make sure the key has YouTube Data API v3 enabled.")
+        raise RuntimeError(
+            "Channel not found. Check YOUTUBE_CHANNEL_HANDLE or YOUTUBE_CHANNEL_ID."
+        )
     ch = items[0]
     return {
         "id": ch["id"],
@@ -69,8 +96,7 @@ def get_comments(video_id, max_results=MAX_COMMENTS_PER_VIDEO):
         })
     except requests.HTTPError as e:
         if e.response.status_code in (403, 404):
-            # Comments disabled or video not found
-            return []
+            return []  # Comments disabled or video unavailable
         raise
     comments = []
     for item in data.get("items", []):
@@ -84,8 +110,7 @@ def get_comments(video_id, max_results=MAX_COMMENTS_PER_VIDEO):
 
 
 def main():
-    api_key = os.environ.get("YOUTUBE_API_KEY")
-    if not api_key:
+    if not os.environ.get("YOUTUBE_API_KEY"):
         print("ERROR: YOUTUBE_API_KEY environment variable not set.", file=sys.stderr)
         sys.exit(1)
 
