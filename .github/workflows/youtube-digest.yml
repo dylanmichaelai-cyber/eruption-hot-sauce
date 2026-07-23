@@ -1,0 +1,35 @@
+name: YouTube Comment Digest
+
+on:
+  schedule:
+    # Every Monday at 9:07 AM UTC
+    - cron: '7 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      max_videos:
+        description: 'Number of recent videos to analyze'
+        default: '5'
+        required: false
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install google-api-python-client anthropic
+
+      - name: Run YouTube digest
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MAX_VIDEOS: ${{ github.event.inputs.max_videos || '5' }}
+        run: python scripts/youtube_digest.py
