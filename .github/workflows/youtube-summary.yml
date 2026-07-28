@@ -1,0 +1,32 @@
+name: YouTube Comment Digest
+
+on:
+  schedule:
+    # Every Monday at 9:03am UTC
+    - cron: "3 9 * * 1"
+  workflow_dispatch: # allow manual runs from the Actions tab
+
+jobs:
+  run-digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests anthropic
+
+      - name: Run YouTube comment summary
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          # Set ONE of the following:
+          YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
+          YOUTUBE_CHANNEL_HANDLE: ${{ secrets.YOUTUBE_CHANNEL_HANDLE }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: "d.mcderm80@gmail.com"
+        run: python scripts/youtube_summary.py
