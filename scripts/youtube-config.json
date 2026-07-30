@@ -1,0 +1,7 @@
+{
+  "apiKey": "REPLACE_WITH_VALID_API_KEY",
+  "channelId": "YOUR_CHANNEL_ID",
+  "videosToCheck": 10,
+  "commentsPerVideo": 50,
+  "recipientEmail": "d.mcderm80@gmail.com"
+}
